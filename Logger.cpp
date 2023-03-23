@@ -8,7 +8,7 @@ using namespace std;
 	void Logger::Write_log(string message)// записать лог - ок
 	{
 		ofstream Result; // создадим объект для чтения исходного файла
-		Result.open("log.txt", ios::app); //откроем файл на запись
+		Result.open("log.txt", ios::app); //откроем файл на запись 
 
 		//получаем текущую дату и время
 		auto now = chrono::system_clock::now();
