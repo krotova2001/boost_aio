@@ -16,19 +16,22 @@ public:
     //читаем данные из буфера, пока не встретим знак перевода строки
     void start()
     {
+        
         boost::asio::async_read_until(socket, streambuf, '\n', [self = shared_from_this()](boost::system::error_code error, std::size_t bytes_transferred)
         { 
             std::ostringstream ss;
+            std::string s;
             ss << (&self->streambuf);
-            std::string s = ss.str();
+            s = ss.str();
             std::cout << s; //выведем в консоль сообщение клиента
             Logger::Write_log(s); // запишем сообщение в лог
             
-            //double r = te_interp(s.c_str(), 0);
-            //std::cout <<r;
         });
 
         //ну и ответим
+
+        //double r = te_interp(s.c_str(), 0);
+        //std::cout <<r;
         string answer = "answer";
         const char* a = answer.c_str();
         boost::system::error_code er;
@@ -38,6 +41,7 @@ public:
 private:
     boost::asio::ip::tcp::socket socket;
     boost::asio::streambuf streambuf;
+    
   
 };
 
