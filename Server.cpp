@@ -23,10 +23,16 @@ public:
             std::string s = ss.str();
             std::cout << s; //выведем в консоль сообщение клиента
             Logger::Write_log(s); // запишем сообщение в лог
-            double r = te_interp(s.c_str(), 0);
-            std::cout <<r;
-        
+            
+            //double r = te_interp(s.c_str(), 0);
+            //std::cout <<r;
         });
+
+        //ну и ответим
+        string answer = "answer";
+        const char* a = answer.c_str();
+        boost::system::error_code er;
+        boost::asio::write(socket, boost::asio::buffer(answer), er);
     }
 
 private:
@@ -56,7 +62,6 @@ private:
     boost::asio::io_context& io_context;
     boost::asio::ip::tcp::acceptor acceptor;
 };
-
 
 
 int main()
