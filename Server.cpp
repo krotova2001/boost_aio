@@ -2,6 +2,9 @@
 #include <iostream>
 #include <memory>
 #include <optional>
+#include "Logger.h" // наш простой самописный логгер
+//#include <json/json.h> // парсер Json (раз уж таково задание)
+#include "tinyexpr.h" 
 
 //класс одного соединения
 class session : public std::enable_shared_from_this<session>
@@ -9,16 +12,29 @@ class session : public std::enable_shared_from_this<session>
 public:
     //конструктор по умолчанию, принимающий наш сокет
     session(boost::asio::ip::tcp::socket&& socket) : socket(std::move(socket)) {}
+    
+
 
     //читаем данные из буфера, пока не встретим знак перевода строки
     void start()
     {
-        boost::asio::async_read_until(socket, streambuf, '\n', [self = shared_from_this()](boost::system::error_code error, std::size_t bytes_transferred) { std::cout << std::istream(&self->streambuf).rdbuf(); });
+        boost::asio::async_read_until(socket, streambuf, '\n', [self = shared_from_this()](boost::system::error_code error, std::size_t bytes_transferred)
+        { 
+            std::ostringstream ss;
+            ss << (&self->streambuf);
+            std::string s = ss.str();
+            std::cout << s; //выведем в консоль сообщение клиента
+            Logger::Write_log(s); // запишем сообщение в лог
+            double r = te_interp(s.c_str(), 0);
+            std::cout <<r;
+        
+        });
     }
 
 private:
     boost::asio::ip::tcp::socket socket;
     boost::asio::streambuf streambuf;
+  
 };
 
 //класс сервера
@@ -43,11 +59,13 @@ private:
     boost::asio::ip::tcp::acceptor acceptor;
 };
 
+
+
 int main()
 {
     boost::asio::io_context io_context;
     server srv(io_context, 15000); // создаем сервер и сокет на порту 15000
-    srv.async_accept(); // запускаем асинхронно при каждой новой сессии
+    srv.async_accept(); // запускаем асинхронно при каждом соединеии создаем новую сессию
     io_context.run();
     return 0;
 }

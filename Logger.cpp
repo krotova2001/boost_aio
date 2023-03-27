@@ -19,9 +19,10 @@ using namespace std;
 			Result << ctime(&end_time) <<" "<< message << endl; // записываем 
 			Result.close(); // закрываем 
 		}
+		//если что не так, придется записать в поток ошибок
 		else
 		{
-			cout << "Can not write" << message << endl;
+			cerr << "Can not write" << message << endl;
 		}
 	}
 
