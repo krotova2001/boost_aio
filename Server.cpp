@@ -12,8 +12,6 @@ class session : public std::enable_shared_from_this<session>
 public:
     //конструктор по умолчанию, принимающий наш сокет
     session(boost::asio::ip::tcp::socket&& socket) : socket(std::move(socket)) {}
-    
-
 
     //читаем данные из буфера, пока не встретим знак перевода строки
     void start()
